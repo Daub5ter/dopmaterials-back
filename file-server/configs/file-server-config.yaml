@@ -1,6 +1,0 @@
-server:
-  domain:
-  port: 44302
-  time_out: 10s
-logger:
-  level: debug
