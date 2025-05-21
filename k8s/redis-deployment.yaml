@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      containers:
+        - name: redis
+          image: redis:7.2
+          ports:
+            - containerPort: 6379
+          env:
+            - name: REDIS_PASSWORD
+              value: "zxz_api_db_redis_qexa"
+          command: ["/bin/sh", "-c", "redis-server --requirepass ${REDIS_PASSWORD}"]
+          volumeMounts:
+            - name: redis-storage
+              mountPath: /var/lib/redis
+      volumes:
+        - name: redis-storage
+          hostPath:
+            path: /storage/databases/redis/
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis
+spec:
+  type: NodePort
+  ports:
+    - port: 6379
+      targetPort: 6379
+      nodePort: 30637
+  selector:
+    app: redis

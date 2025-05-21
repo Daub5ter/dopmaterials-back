@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opensearch
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: opensearch
+  template:
+    metadata:
+      labels:
+        app: opensearch
+    spec:
+      containers:
+        - name: opensearch
+          image: opensearchproject/opensearch:2
+          ports:
+            - containerPort: 9200
+            - containerPort: 9600
+          env:
+            - name: discovery.type
+              value: "single-node"
+            - name: OPENSEARCH_INITIAL_ADMIN_PASSWORD
+              value: "@dop5329__mAteRiaLS"
+          volumeMounts:
+            - name: opensearch-storage
+              mountPath: /usr/share/opensearch/data
+      volumes:
+        - name: opensearch-storage
+          hostPath:
+            path: /storage/databases/opensearch/
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: opensearch
+spec:
+  type: NodePort
+  ports:
+    - port: 9200
+      targetPort: 9200
+      nodePort: 30920
+      name: opensearchrestapi
+    - port: 9600
+      targetPort: 9600
+      nodePort: 30960
+      name: performanceanalyzer
+  selector:
+    app: opensearch

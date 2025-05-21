@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:16.0
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_USER
+              value: "user_dopmaterial"
+            - name: POSTGRES_PASSWORD
+              value: "cxqsaz_dopmaterial_password_qqqwez"
+            - name: POSTGRES_DB
+              value: "dopmaterial"
+          volumeMounts:
+            - name: postgres-storage
+              mountPath: /var/lib/postgresql/data/
+      volumes:
+        - name: postgres-storage
+          hostPath:
+            path: /storage/databases/postgres/
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+spec:
+  type: NodePort
+  ports:
+    - port: 5432
+      targetPort: 5432
+      nodePort: 30543
+  selector:
+    app: postgres
