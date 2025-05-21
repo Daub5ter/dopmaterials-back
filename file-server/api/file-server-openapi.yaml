@@ -1,0 +1,178 @@
+openapi: 3.0.0
+info:
+  title: DopMaterials
+  description: Описание методов file-server
+  version: "1.0.0"
+servers:
+  - url: "http://localhost:44302"
+paths:
+
+  /photos/{filename_with_extension}:
+    get:
+      tags:
+        - photos
+      summary: Получить фотографию
+      parameters:
+        - name: filename_with_extension
+          in: path
+          required: true
+          description: имя файла с расширением
+          schema:
+            type: string
+      responses:
+        '400':
+          description: "Неправильные или неполные данные"
+        '404':
+          description: "Не найдены данные"
+        '500':
+          description: "Неизвестная ошибка сервера"
+        '200':
+          description: Фотография получена
+          content:
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
+            image/png:
+              schema:
+                type: string
+                format: binary
+    delete:
+      tags:
+        - photos
+      summary: Удалить фотографию
+      parameters:
+        - name: filename_with_extension
+          in: path
+          required: true
+          description: имя файла с расширением
+          schema:
+            type: string
+      responses:
+        '400':
+          description: "Неправильные или неполные данные"
+        '404':
+          description: "Не найдены данные"
+        '500':
+          description: "Неизвестная ошибка сервера"
+        '204':
+          description: Фотография удалена
+  /photos/{filename}:
+    post:
+      tags:
+        - photos
+      summary: Добавить фотографию
+      parameters:
+        - name: filename
+          in: path
+          required: true
+          description: имя файла
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                photo:
+                  type: string
+                  format: binary
+      responses:
+        '400':
+          description: "Неправильные или неполные данные"
+        '413':
+          description: "Файл превышает допустимый размер"
+        '500':
+          description: "Неизвестная ошибка сервера"
+        '201':
+          description: Фотография добавлена
+
+  /videos/{filename}/{filename_part}:
+    get:
+      tags:
+        - videos
+      summary: Получить HLS видео
+      parameters:
+        - name: filename
+          in: path
+          required: true
+          description: имя файла
+          schema:
+            type: string
+        - name: filename_part
+          in: path
+          required: true
+          description: имя части или плейлиста файла
+          schema:
+            type: string
+      responses:
+        '400':
+          description: "Неправильные или неполные данные"
+        '404':
+          description: "Не найдены данные"
+        '500':
+          description: "Неизвестная ошибка сервера"
+        '200':
+          description: Плейлист HLS получен
+          content:
+            application/vnd.apple.mpegurl:
+              schema:
+                type: string
+                format: binary
+            application/x-mpegURL:
+              schema:
+                type: string
+                format: binary
+  /videos/{filename}:
+    post:
+      tags:
+        - videos
+      summary: Добавить видео
+      parameters:
+        - name: filename
+          in: path
+          required: true
+          description: имя файла
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                video:
+                  type: string
+                  format: binary
+      responses:
+        '400':
+          description: "Неправильные или неполные данные"
+        '413':
+          description: "Файл превышает допустимый размер"
+        '500':
+          description: "Неизвестная ошибка сервера"
+        '201':
+          description: Видео добавлено
+    delete:
+      tags:
+        - videos
+      summary: Удалить видео
+      parameters:
+        - name: file_name
+          in: path
+          required: true
+          description: имя файла
+          schema:
+            type: string
+      responses:
+        '400':
+          description: "Неправильные или неполные данные"
+        '404':
+          description: "Не найдены данные"
+        '500':
+          description: "Неизвестная ошибка сервера"
+        '204':
+          description: Видео удалено

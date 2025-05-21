@@ -1,0 +1,13 @@
+server:
+  domain:
+  port: 44300
+  time_out: 10s
+limiter:
+  addr: redis:6379
+  timeout: 3s
+  time_living_ip_address: 10s
+  max_requests_time_living_ip_address: 50
+search:
+
+logger:
+  level: debug
